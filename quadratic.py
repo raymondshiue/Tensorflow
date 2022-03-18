@@ -81,14 +81,14 @@ from sklearn.model_selection import GridSearchCV
 def create_model(layers, activation):
     model =tf.keras.models.Sequential()
     for i,nodes in enumerate(layers):
-        model.add(Dense(nodes))
+        model.add(SimpleDense(nodes))
         model.add(Activation(activation))
-    model.add(Dense(1))
+    model.add(SimpleDense(1))
     model.compile(optimizer='adam',loss='mean_squared_error',metrics=['mean_squared_error'])
     return model
 model =KerasRegressor(build_fn=create_model,verbose=0)
-layers=[[10],[10,10],[100],[100,10],[10,100]]
-param_grid=dict(layers=layers,activation=['relu'],batch_size=[32,128],epochs=[100])
+layers=[[10],[32],[10,32],[32,10],[10,10],[100],[100,10],[10,100]]
+param_grid=dict(layers=layers,activation=['relu'],batch_size=[32,128],epochs=[200])
 grid=GridSearchCV(estimator=model,param_grid=param_grid)
 grid_result=grid.fit(xdata,ydata)
 print(xdata.size,ydata.size)
@@ -96,9 +96,9 @@ print(grid_result.best_params_)
 '''
 
 model = tf.keras.models.Sequential([
-    SimpleDense(10, activation='relu'),
-    tf.keras.layers.Dropout(0.2),
     SimpleDense(100, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    SimpleDense(10, activation='relu'),
     # tf.keras.layers.Dense(10, activation='softmax')
     SimpleDense(1, activation=None)
 ])
